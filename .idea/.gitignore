@@ -2,7 +2,7 @@
 /shelf/
 /workspace.xml
 # Datasource local storage ignored files
-/../../../../../:\OSPanel\domains\laravel-restful\.idea/dataSources/
+/../../../../../:\OpenServer\domains\laravel-restful\.idea/dataSources/
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/

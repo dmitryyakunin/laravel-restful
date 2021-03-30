@@ -48,11 +48,13 @@ export default {
                 });
         },
         deleteItem(id) {
-            axios.delete('http://laravel-restful/api/categories/' + id)
-                .then(response => {
-                    this.getCategories()
-                    console.log('deleted '+id);
-                });
+            if (confirm('Удалить категорию? ')) {
+                axios.delete('http://laravel-restful/api/categories/' + id)
+                    .then(response => {
+                        this.getCategories()
+                        console.log('deleted ' + id);
+                    });
+            }
         }
     },
     mounted() {

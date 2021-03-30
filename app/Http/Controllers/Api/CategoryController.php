@@ -34,7 +34,6 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
         ]);
         $category = new Category();
         $category->name = $request->input('name');
@@ -67,7 +66,6 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
         ]);
         $category->name = $request->input('name');
         $category->description = $request->input('description');

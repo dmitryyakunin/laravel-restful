@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2> Интернет магазин </h2>
+        <h2> Каталог товаров </h2>
         <router-view />
     </div>
 </template>

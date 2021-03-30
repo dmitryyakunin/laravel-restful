@@ -13,8 +13,8 @@ class AddsDescriptionToCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::table('categories', function (Blueprint $table) {
-            $table->string('description');
+        Schema::table('products', function (Blueprint $table) {
+            $table->string('description')->nullable();
         });
     }
 
@@ -25,7 +25,7 @@ class AddsDescriptionToCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::table('categories', function (Blueprint $table) {
+        Schema::table('products', function (Blueprint $table) {
             $table->dropColumn(['description']);
         });
     }
