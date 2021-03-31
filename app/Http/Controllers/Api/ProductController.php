@@ -39,6 +39,7 @@ class ProductController extends Controller
         $product->name = $request->input('name');
         $product->description = $request->input('description');
         $product->price = $request->input('price');
+        $product->categories()->sync($request->input('categories'));
         $product->save();
         Log::info("User ID {$product->id} created successfully.");
 
@@ -71,6 +72,7 @@ class ProductController extends Controller
         $product->name = $request->input('name');
         $product->description = $request->input('description');
         $product->price = $request->input('price');
+        $product->categories()->sync($request->input('categories'));
         $product->save();
         Log::info("User ID {$product->id} updated successfully.");
 

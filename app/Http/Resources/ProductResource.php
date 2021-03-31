@@ -19,8 +19,10 @@ class ProductResource extends JsonResource
             'name'        => $this->name,
             'description' => $this->description,
             'price'       => $this->price,
+            'categories'  => $this->categories,
             'created_at'  => $this->created_at,
             'updated_at'  => $this->updated_at,
         ];
+//        return parent::toArray($request);
     }
 }

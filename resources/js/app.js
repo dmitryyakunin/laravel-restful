@@ -10,6 +10,11 @@ window.Vue = require('vue').default;
 
 import router from './router'
 
+import '../sass/bootstrap_combo.scss'
+import BootstrapVue from 'bootstrap-vue' //Importing
+
+Vue.use(BootstrapVue) // Telling Vue to use this in whole application
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -23,7 +28,6 @@ import router from './router'
 
 
 //Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-//Vue.component('main-component', require('./components/MainComponent.vue').default);
 Vue.component('main-app', require('./components/MainApp.vue').default);
 
 
@@ -35,5 +39,6 @@ Vue.component('main-app', require('./components/MainApp.vue').default);
 
 const app = new Vue({
     router,
+
     el: '#app',
 });
