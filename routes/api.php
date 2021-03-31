@@ -21,3 +21,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::apiResource('categories', 'App\Http\Controllers\Api\CategoryController');
 
 Route::apiResource('products', 'App\Http\Controllers\Api\ProductController');
+
+Route::get('product-name/{name}', 'App\Http\Controllers\Api\ProductController@searchByName')
+    ->name('products.searchByName');
+Route::get('product-category-name/{category}', 'App\Http\Controllers\Api\ProductController@searchByCategoryName')
+    ->name('products.searchByCategoryName');
+Route::get('product-category-id/{id}', 'App\Http\Controllers\Api\ProductController@searchByCategoryID')
+    ->name('products.searchByCategoryID');

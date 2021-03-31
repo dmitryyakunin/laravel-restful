@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import SearchProducts from '../components/SearchProducts.vue'
 import Categories from '../components/Categories.vue'
 import Products from '../components/Products.vue'
 import AddProduct from '../components/AddProduct.vue'
@@ -13,9 +14,14 @@ const router = new Router({
     routes: [
         {
             path: '/',
+            name: 'search-products',
+            component: SearchProducts
+        },
+        {
+            path: '/сategories',
             name: 'сategories',
             component: Categories
-        },
+        },				
         {
             path: '/products',
             name: 'products',

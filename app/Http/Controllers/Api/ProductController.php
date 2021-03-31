@@ -91,4 +91,48 @@ class ProductController extends Controller
         Log::info("Product ID {$product->id} deleted successfully.");
         return response(null, Response::HTTP_NO_CONTENT);
     }
+
+    public function searchByName($name)
+    {
+        //$product = Product::all();
+        $product = Product::all()->filter(function ($item) use ($name) {
+            return false !== stristr($item->name, $name);
+        });
+
+        return (new ProductResourceCollection($product))->response();
+    }
+
+    public function searchByCategoryName($category)
+    {
+        $c = collect(new Product); // пустая коллекция
+
+        $items = Product::all();
+        foreach ($items as $item) {
+            $product = $item->categories->filter(function ($item) use ($category) {
+                return false !== stristr($item->name, $category);
+            });
+            if ($product->count() > 0) {    // Если найдена категория
+                $c->push($item);            // добавляем продукт в коллекцию
+            }
+        }
+
+        return (new ProductResourceCollection($c))->response();
+    }
+
+    public function searchByCategoryID($categoryID)
+    {
+        $c = collect(new Product); // пустая коллекция
+
+        $items = Product::all();
+        foreach ($items as $item) {
+            $product = $item->categories->filter(function ($item) use ($categoryID) {
+                return ($item->id == $categoryID);
+            });
+            if ($product->count() > 0) {    // Если найдена категория
+                $c->push($item);            // добавляем продукт в коллекцию
+            }
+        }
+
+        return (new ProductResourceCollection($c))->response();
+    }
 }

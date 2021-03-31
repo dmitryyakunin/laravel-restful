@@ -1,8 +1,10 @@
 <template>
     <div>
         <h4> Товары </h4>
-        <router-link class="btn btn-outline-primary position" to="/add-products" tag="button">Добавить товар
+        <router-link class="btn btn-outline-primary position" to="/add-products" tag="button">
+            Добавить товар
         </router-link>
+
         <table class="table table-bordered">
             <tr class="table-active">
                 <th> Наименование</th>
@@ -75,8 +77,5 @@ export default {
 </script>
 
 <style scoped>
-.position {
-    margin-top: 10px;
-    margin-bottom: 5px;
-}
+
 </style>
