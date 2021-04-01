@@ -1,9 +1,9 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
     <div>
         <h4> Товары </h4>
-        <router-link class="btn btn-outline-primary position" to="/add-products" tag="button">
+        <button class="btn btn-outline-primary position" v-on:click="addItem()">
             Добавить товар
-        </router-link>
+        </button>
 
         <table class="table table-bordered">
             <tr class="table-active">
@@ -18,7 +18,13 @@
                 <td> {{ item.price }}</td>
                 <td>
                     <button class="btn btn-outline-success"
-                            v-on:click="editItem(item.id, item.name, item.price, item.description, item.categories)">
+                            v-on:click="editItem(
+                                item.id,
+                                item.name,
+                                item.price,
+                                item.description,
+                                item.categories,
+                                item.published)">
                         Редактировать
                     </button>
                 </td>
@@ -48,14 +54,17 @@ export default {
         },
         deleteItem(id) {
             if (confirm('Удалить продукт? ')) {
-                axios.delete('http://laravel-restful/api/products/' + id)
+                axios.put('http://laravel-restful/api/product-delete/' + id)
                     .then(response => {
-                        this.getProducts()
                         console.log('deleted ' + id);
+                        this.getProducts()
                     });
             }
         },
-        editItem(id, name, price, description, selected) {
+        addItem() {
+            this.$router.push({ name: 'add-products', params: { edit: '0' }}).catch(err => { })
+        },
+        editItem(id, name, price, description, selected, published) {
             this.$router.push({
                 name: 'add-products',
                 params: {
@@ -64,7 +73,8 @@ export default {
                     name: name,
                     price: price,
                     description: description,
-                    selected: selected
+                    selected: selected,
+                    published: published
                 }
             }).catch(err => {
             })

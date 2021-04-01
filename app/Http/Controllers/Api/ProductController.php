@@ -19,7 +19,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $product = Product::paginate();
+        $product = Product::all();
 
         return (new ProductResourceCollection($product))->response();
     }
@@ -40,8 +40,9 @@ class ProductController extends Controller
         $product->description = $request->input('description');
         $product->price = $request->input('price');
         $product->categories()->sync($request->input('categories'));
+        $product->published = $request->input('published');
         $product->save();
-        Log::info("User ID {$product->id} created successfully.");
+        Log::info("Product ID {$product->id} created successfully.");
 
         return (new ProductResource($product))->response()->setStatusCode(Response::HTTP_CREATED);
     }
@@ -73,8 +74,24 @@ class ProductController extends Controller
         $product->description = $request->input('description');
         $product->price = $request->input('price');
         $product->categories()->sync($request->input('categories'));
+        $product->published = $request->input('published');
         $product->save();
-        Log::info("User ID {$product->id} updated successfully.");
+        Log::info("Product ID {$product->id} updated successfully.");
+
+        return (new ProductResource($product))->response();
+    }
+
+    /**
+     * @param Request $request
+     * @param Product $product
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function softDelete(Request $request, Product $product)
+    {
+        $product->published = 0;
+        $product->deleted = 1;
+        $product->save();
+        Log::info("Product ID {$product->id} deleted successfully.");
 
         return (new ProductResource($product))->response();
     }
@@ -92,6 +109,10 @@ class ProductController extends Controller
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
+    /**
+     * @param $name
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function searchByName($name)
     {
         //$product = Product::all();
@@ -102,6 +123,10 @@ class ProductController extends Controller
         return (new ProductResourceCollection($product))->response();
     }
 
+    /**
+     * @param $category
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function searchByCategoryName($category)
     {
         $c = collect(new Product); // пустая коллекция
@@ -119,6 +144,10 @@ class ProductController extends Controller
         return (new ProductResourceCollection($c))->response();
     }
 
+    /**
+     * @param $categoryID
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function searchByCategoryID($categoryID)
     {
         $c = collect(new Product); // пустая коллекция
@@ -134,5 +163,37 @@ class ProductController extends Controller
         }
 
         return (new ProductResourceCollection($c))->response();
+    }
+
+    /**
+     * @param $priceFrom
+     * @param $priceTo
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function searchByPrice($priceFrom, $priceTo)
+    {
+        $product = Product::all()->filter(function ($item) use ($priceFrom, $priceTo) {
+            return ( ($item->price >= $priceFrom) && ($item->price <= $priceTo) );
+        });
+
+        return (new ProductResourceCollection($product))->response();
+    }
+
+    public function indexPublished($published)
+    {
+        $product = Product::all()->filter(function ($item) use ($published) {
+            return ( $item->published == $published );
+        });
+
+        return (new ProductResourceCollection($product))->response();
+    }
+
+    public function indexNotDeleted($deleted)
+    {
+        $product = Product::all()->filter(function ($item) use ($deleted) {
+            return ( $item->deleted == $deleted );
+        });
+
+        return (new ProductResourceCollection($product))->response();
     }
 }

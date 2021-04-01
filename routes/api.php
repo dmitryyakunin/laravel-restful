@@ -22,9 +22,17 @@ Route::apiResource('categories', 'App\Http\Controllers\Api\CategoryController');
 
 Route::apiResource('products', 'App\Http\Controllers\Api\ProductController');
 
+Route::put('product-delete/{product}', 'App\Http\Controllers\Api\ProductController@softDelete')
+    ->name('products.softDelete');
 Route::get('product-name/{name}', 'App\Http\Controllers\Api\ProductController@searchByName')
     ->name('products.searchByName');
 Route::get('product-category-name/{category}', 'App\Http\Controllers\Api\ProductController@searchByCategoryName')
     ->name('products.searchByCategoryName');
 Route::get('product-category-id/{id}', 'App\Http\Controllers\Api\ProductController@searchByCategoryID')
     ->name('products.searchByCategoryID');
+Route::get('product-price/{pricefrom}/{priceto}', 'App\Http\Controllers\Api\ProductController@searchByPrice')
+    ->name('products.searchByPrice');
+Route::get('product-published/{yes}', 'App\Http\Controllers\Api\ProductController@indexPublished')
+    ->name('products.indexPublished');
+Route::get('product-deleted/{yes}', 'App\Http\Controllers\Api\ProductController@indexNotDeleted')
+    ->name('products.indexNotDeleted');

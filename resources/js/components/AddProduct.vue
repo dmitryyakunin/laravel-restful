@@ -15,7 +15,13 @@
                     <div class="form-group">
                         <label for="inputPrice">Цена</label>
                         <input type="text" class="form-control" id="inputPrice" v-model="price"
-                               placeholder="Наименование">
+                               placeholder="Цена">
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" v-model="published" id="checkPublished">
+                        <label class="form-check-label" for="checkPublished">
+                            Опубликовано
+                        </label>
                     </div>
                     <div> Категории </div>
                     <table class="table table-bordered">
@@ -86,8 +92,10 @@ export default {
         description: null,
         selected: [],
         categories: null,
+        published: true,
         selectedCat: [],
         products: null,
+        payload: null,
     }),
     methods: {
         getCategories() {
@@ -100,48 +108,72 @@ export default {
         },
         addEditItem() {
             if(this.$route.params.edit === '1') {   // редактирование
+                this.getPayload()
 
-                for (let i=0; i < this.selected.length; i++) {
-                    let category = this.selected[i].split('-')
-                    for (let k=0; k < this.categories.length; k++) {
-                        if (category[1] === this.categories[k].name ) {
-                            this.selectedCat[i] = this.categories[k].id
-                        }
-                    }
-                }
-                const payload = {
-                    name: this.name,
-                    description: this.description,
-                    price: this.price,
-                    categories: this.selectedCat
-                };
-
-                axios.put("http://laravel-restful/api/products/"+this.id, payload)
+                axios.put("http://laravel-restful/api/products/"+this.id, this.payload)
                     .then(response => {
                         this.id = response.data.data.id
+                        this.getProducts()
                     }).catch(error => console.log(error));
             } else {
-                axios.post("http://laravel-restful/api/products", payload)
+                this.getPayload()
+                this.payload.categories = []
+
+                axios.post("http://laravel-restful/api/products", this.payload) // сохраним
                     .then(response => {
                         this.id = response.data.data.id
+
+                        this.payload.categories = this.selectedCat  // восстановим категории
+                        axios.put("http://laravel-restful/api/products/"+this.id, this.payload) // запишем категории
+                            .then(response => {
+                                this.id = response.data.data.id
+                                this.getProducts()
+                            }).catch(error => console.log(error));
+
                     }).catch(error => console.log(error));
             }
-            this.getProducts()
+
             this.$router.push({name: 'products'}).catch(err => { })
+        },
+        getPayload() {
+            for (let i=0; i < this.selected.length; i++) {
+                let category = this.selected[i].split('-')
+                for (let k=0; k < this.categories.length; k++) {
+                    if (category[1] === this.categories[k].name ) {
+                        this.selectedCat[i] = this.categories[k].id
+                    }
+                }
+            }
+            let published = this.published ? 1 : 0
+            this.payload = {
+                name: this.name,
+                description: this.description,
+                price: this.price,
+                categories: this.selectedCat,
+                published: published
+            }
         },
         getProducts() {
             axios
                 .get('http://laravel-restful/api/products/')
                 .then(response => (this.products = response.data.data));
         },
+        getLastRecord() {
+            axios.get("http://laravel-restful/api/product-last/")
+                .then(response => {
+                    this.id = response.data.data.id
+                }).catch(error => console.log(error));
+        },
     },
     mounted() {
+        this.edit = this.$route.params.edit
+
         if(this.$route.params.edit === '1') {  // редактирование
-            this.edit = this.$route.params.edit
             this.id = this.$route.params.id
             this.name = this.$route.params.name
             this.price = this.$route.params.price
             this.description = this.$route.params.description
+            this.published = (this.$route.params.published === 1);
 
             if (this.$route.params.selected === undefined) { // нет категорий
                 this.selected = []
@@ -151,6 +183,7 @@ export default {
                     '-' + this.$route.params.selected[i].name
                 }
             }
+
         }
         this.getCategories()
     }
