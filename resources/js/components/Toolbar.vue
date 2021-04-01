@@ -7,7 +7,7 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <b-nav-item  :to="{ path: '/' }">Поиск</b-nav-item>
-                <b-nav-item  :to="{ path: '/сategories' }">Категории</b-nav-item>
+                <b-nav-item  :to="{ path: '/categories' }">Категории</b-nav-item>
                 <b-nav-item  :to="{ path: '/products' }">Товары</b-nav-item>
             </div>
         </div>

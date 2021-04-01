@@ -1,7 +1,7 @@
 <template>
     <div>
         <toolbar/>
-        <div class="container-fluid">
+        <div class="container-fluid main-position">
             <router-view/>
         </div>
     </div>
@@ -20,6 +20,10 @@ export default {
 </script>
 
 <style>
+
+.main-position {
+    padding: 20px;
+}
 
 .position {
     margin-top: 10px;

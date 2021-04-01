@@ -50,7 +50,8 @@ export default {
         getProducts() {
             axios
                 .get('http://laravel-restful/api/products/')
-                .then(response => (this.products = response.data.data));
+                .then(response => (this.products = response.data.data))
+                .catch(error => console.log(error));
         },
         deleteItem(id) {
             if (confirm('Удалить продукт? ')) {
@@ -58,7 +59,7 @@ export default {
                     .then(response => {
                         console.log('deleted ' + id);
                         this.getProducts()
-                    });
+                    }).catch(error => console.log(error));
             }
         },
         addItem() {

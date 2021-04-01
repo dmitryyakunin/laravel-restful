@@ -19,9 +19,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('categories', 'App\Http\Controllers\Api\CategoryController');
+Route::put('category-delete/{category}', 'App\Http\Controllers\Api\CategoryController@softDelete')
+    ->name('categories.softDelete');
+Route::get('category-search-products/{category}', 'App\Http\Controllers\Api\CategoryController@searchProducts')
+    ->name('categories.searchProducts');
 
 Route::apiResource('products', 'App\Http\Controllers\Api\ProductController');
-
 Route::put('product-delete/{product}', 'App\Http\Controllers\Api\ProductController@softDelete')
     ->name('products.softDelete');
 Route::get('product-name/{name}', 'App\Http\Controllers\Api\ProductController@searchByName')

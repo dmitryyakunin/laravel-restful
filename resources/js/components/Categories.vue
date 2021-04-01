@@ -1,9 +1,10 @@
 <template>
     <div>
         <h3>Категории</h3>
-        <router-link class="btn btn-outline-primary position" to="/add-category" tag="button">
+
+        <button class="btn btn-outline-primary position" v-on:click="addItem()">
             Добавить категорию
-        </router-link>
+        </button>
 
         <table class="table table-bordered">
             <tr>
@@ -18,7 +19,7 @@
                 <td> {{ item.description }}</td>
                 <td>
                     <button class="btn btn-outline-success"
-                            v-on:click="editItem(item.id, item.name, item.description, item.categories)">
+                            v-on:click="editItem(item.id, item.name, item.description, item.published)">
                         Редактировать
                     </button>
                 </td>
@@ -29,14 +30,6 @@
                 </td>
             </tr>
         </table>
-        <br/>
-        <form>
-            <input type="text" v-model="name" placeholder="name"/> <br/>
-            <input type="text" v-model="description" placeholder="description"/> <br/>
-            <button v-on:click="addCategory()">
-                Добавить
-            </button>
-        </form>
     </div>
 </template>
 
@@ -45,25 +38,23 @@ export default {
     name: "Categories",
     data: () => ({
         categories: null,
-        id: null,
-        name: null,
-        description: null,
     }),
     methods: {
         getCategories() {
             axios
                 .get('http://laravel-restful/api/categories/')
-                .then(response => (this.categories = response.data.data));
+                .then(response => (this.categories = response.data.data))
+                .catch(error => console.log(error));
         },
-        addCategory() {
-            const payload = {name: this.name, description: this.description};
-            axios.post("http://laravel-restful/api/categories", payload)
-                .then(response => {
-                    this.id = response.data.data.id
-                    this.getCategories()
-                });
+        addItem() {
+            this.$router.push({
+                name: 'add-category',
+                params: {
+                    edit: '0'
+                }})
+                .catch(error => {console.log(error)})
         },
-        editItem(id, name, price, description, selected) {
+        editItem(id, name, description, published) {
             this.$router.push({
                 name: 'add-category',
                 params: {
@@ -71,20 +62,29 @@ export default {
                     id: id,
                     name: name,
                     description: description,
-                    selected: selected
+                    published: published
                 }
-            }).catch(err => {
-            })
+            }).catch(error => {console.log(error)})
         },
         deleteItem(id) {
             if (confirm('Удалить категорию? ')) {
-                axios.delete('http://laravel-restful/api/categories/' + id)
+                // проверим товары в категории
+                axios.get("http://laravel-restful/api/category-search-products/"+id)
                     .then(response => {
-                        this.getCategories()
-                        console.log('deleted ' + id);
-                    });
+                        //console.log(response.data)
+                        if(response.data === 0) {
+                            // удалим программно
+                            axios.put('http://laravel-restful/api/category-delete/' + id)
+                                .then(response => {
+                                    console.log('deleted ' + id);
+                                    this.getCategories()
+                                }).catch(error => console.log(error));
+                        } else {
+                            alert('В категории есть товары - не удаляем!')
+                        }
+                    }).catch(error => console.log(error));
             }
-        }
+        },
     },
     mounted() {
         this.getCategories()

@@ -15,11 +15,14 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        $categories = Category::paginate();
+        //$categories = Category::all();
+        $categories = Category::all()->filter(function ($item)  {
+            return ( $item->deleted == 0 );
+        });
 
         return (new CategoryResourceCollection($categories))->response();
     }
@@ -27,19 +30,21 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|object
      */
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
         ]);
         $category = new Category();
         $category->name = $request->input('name');
         $category->description = $request->input('description');
+        $category->published = $request->input('published');
         $category->save();
-        Log::info("User ID {$category->id} created successfully.");
+        Log::info("Category ID {$category->id} created successfully.");
 
         return (new CategoryResource($category))->response()->setStatusCode(Response::HTTP_CREATED);
     }
@@ -47,8 +52,8 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @param Category $category
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Category $category)
     {
@@ -58,19 +63,36 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Category $category
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, Category $category): \Illuminate\Http\Response
+    public function update(Request $request, Category $category)
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
         ]);
         $category->name = $request->input('name');
         $category->description = $request->input('description');
+        $category->published = $request->input('published');
         $category->save();
-        Log::info("User ID {$category->id} updated successfully.");
+        Log::info("Category ID {$category->id} updated successfully.");
+
+        return (new CategoryResource($category))->response();
+    }
+
+    /**
+     * @param Request $request
+     * @param Product $product
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function softDelete(Request $request, Category $category)
+    {
+        $category->published = 0;
+        $category->deleted = 1;
+        $category->save();
+        Log::info("Category ID {$category->id} deleted successfully.");
 
         return (new CategoryResource($category))->response();
     }
@@ -84,8 +106,17 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $category->delete();
-        Log::info("User ID {$category->id} deleted successfully.");
+        Log::info("Category ID {$category->id} deleted successfully.");
 
         return response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @param Category $category
+     * @return mixed
+     */
+    public function searchProducts(Category $category)
+    {
+        return $category->products->count();
     }
 }

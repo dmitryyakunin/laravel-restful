@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="card" style="width: 30rem;">
+        <div class="card" style="width: 600px;">
             <div class="card-body">
                 <form>
                     <div class="form-group">
@@ -23,7 +23,7 @@
                             Опубликовано
                         </label>
                     </div>
-                    <div> Категории </div>
+                    <div> Категории</div>
                     <table class="table table-bordered">
                         <tr v-for="(item, index ) in selected" :key="index">
                             <td> {{ item }}</td>
@@ -35,12 +35,19 @@
                     </button>
 
                     <p></p>
-                    <button class="btn btn-outline-primary" v-if="edit==='0'" v-on:click="addEditItem()">
-                        Добавить товар
-                    </button>
-                    <button class="btn btn-outline-primary" v-if="edit==='1'" v-on:click="addEditItem()">
-                        Сохранить изменения
-                    </button>
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <button class="btn btn-outline-primary" v-if="edit==='0'" v-on:click="addEditItem()">
+                                Добавить товар
+                            </button>
+                            <button class="btn btn-outline-primary" v-if="edit==='1'" v-on:click="addEditItem()">
+                                Сохранить изменения
+                            </button>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-outline-primary" v-on:click="returnToList()">Отмена</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -107,13 +114,14 @@ export default {
             document.getElementById('close-btn').click();
         },
         addEditItem() {
-            if(this.$route.params.edit === '1') {   // редактирование
+            if (this.$route.params.edit === '1') {   // редактирование
                 this.getPayload()
 
-                axios.put("http://laravel-restful/api/products/"+this.id, this.payload)
+                axios.put("http://laravel-restful/api/products/" + this.id, this.payload)
                     .then(response => {
                         this.id = response.data.data.id
-                        this.getProducts()
+                        this.$router.push({name: 'products'}).catch(err => {
+                        })
                     }).catch(error => console.log(error));
             } else {
                 this.getPayload()
@@ -124,22 +132,22 @@ export default {
                         this.id = response.data.data.id
 
                         this.payload.categories = this.selectedCat  // восстановим категории
-                        axios.put("http://laravel-restful/api/products/"+this.id, this.payload) // запишем категории
+                        axios.put("http://laravel-restful/api/products/" + this.id, this.payload) // запишем категории
                             .then(response => {
                                 this.id = response.data.data.id
-                                this.getProducts()
+                                this.$router.push({name: 'products'}).catch(err => {
+                                })
                             }).catch(error => console.log(error));
 
                     }).catch(error => console.log(error));
             }
 
-            this.$router.push({name: 'products'}).catch(err => { })
         },
         getPayload() {
-            for (let i=0; i < this.selected.length; i++) {
+            for (let i = 0; i < this.selected.length; i++) {
                 let category = this.selected[i].split('-')
-                for (let k=0; k < this.categories.length; k++) {
-                    if (category[1] === this.categories[k].name ) {
+                for (let k = 0; k < this.categories.length; k++) {
+                    if (category[1] === this.categories[k].name) {
                         this.selectedCat[i] = this.categories[k].id
                     }
                 }
@@ -158,17 +166,17 @@ export default {
                 .get('http://laravel-restful/api/products/')
                 .then(response => (this.products = response.data.data));
         },
-        getLastRecord() {
-            axios.get("http://laravel-restful/api/product-last/")
-                .then(response => {
-                    this.id = response.data.data.id
-                }).catch(error => console.log(error));
+        returnToList() {
+            this.$router.push({name: 'products'})
+                .catch(error => {
+                    console.log(error)
+                })
         },
     },
     mounted() {
         this.edit = this.$route.params.edit
 
-        if(this.$route.params.edit === '1') {  // редактирование
+        if (this.$route.params.edit === '1') {  // редактирование
             this.id = this.$route.params.id
             this.name = this.$route.params.name
             this.price = this.$route.params.price
@@ -178,9 +186,9 @@ export default {
             if (this.$route.params.selected === undefined) { // нет категорий
                 this.selected = []
             } else {
-                for (let i=0; i < this.$route.params.selected.length; i++) {
+                for (let i = 0; i < this.$route.params.selected.length; i++) {
                     this.selected[i] = this.$route.params.selected[i].id +
-                    '-' + this.$route.params.selected[i].name
+                        '-' + this.$route.params.selected[i].name
                 }
             }
 

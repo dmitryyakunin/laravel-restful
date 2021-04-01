@@ -155,7 +155,7 @@ export default {
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option3') {    // Название категории
-                let url = 'http://laravel-restful/api/product-category-name/' + this.priceFrom
+                let url = 'http://laravel-restful/api/product-category-name/' + this.searchString
                 axios
                     .get(url)
                     .then(response => (this.products = response.data.data));
