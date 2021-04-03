@@ -27,35 +27,16 @@ class SearchProducts
      */
     public function searchByCategoryName($category)
     {
-        $c = collect(new Product); // пустая коллекция
-
-        $items = Product::all();
-        foreach ($items as $item) {
-            $product = $item->categories->filter(function ($item) use ($category) {
-                return false !== stristr($item->name, $category);
-            });
-            if ($product->count() > 0) {    // Если найдена категория
-                $c->push($item);            // добавляем продукт в коллекцию
-            }
-        }
-
-        return (new ProductResourceCollection($c))->response();
-    }
-
-    /**
-     * @param $category
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function searchByCategoryName1($category)
-    {
         $products = collect(new Product); // пустая коллекция
 
         $items = Category::all()->filter(function ($item) use ($category) { // выберем категории по имени
             return false !== stristr($item->name, $category);
         });
 
-        foreach ($items as $item) {
-            $products->push($item->products);
+        foreach ($items as $item) {                 // в выбранных категориях
+            foreach ($item->products as $prod) {
+                $products->push($prod);             // дабавим все продукты в коллекцию
+            }
         }
 
         return (new ProductResourceCollection($products))->response();
@@ -67,19 +48,19 @@ class SearchProducts
      */
     public function searchByCategoryID($categoryID)
     {
-        $c = collect(new Product); // пустая коллекция
+        $products = collect(new Product); // пустая коллекция
 
-        $items = Product::all();
-        foreach ($items as $item) {
-            $product = $item->categories->filter(function ($item) use ($categoryID) {
-                return ($item->id == $categoryID);
-            });
-            if ($product->count() > 0) {    // Если найдена категория
-                $c->push($item);            // добавляем продукт в коллекцию
+        $items = Category::all()->filter(function ($item) use ($categoryID) { // выберем категории по ID
+            return false !== stristr($item->id, $categoryID);
+        });
+
+        foreach ($items as $item) {                 // в выбранных категориях
+            foreach ($item->products as $prod) {
+                $products->push($prod);             // дабавим все продукты в коллекцию
             }
         }
 
-        return (new ProductResourceCollection($c))->response();
+        return (new ProductResourceCollection($products))->response();
     }
 
     /**
