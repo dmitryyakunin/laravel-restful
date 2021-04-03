@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Library\Services\SearchProducts;
 use App\Models\Product;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductResourceCollection;
@@ -112,56 +113,27 @@ class ProductController extends Controller
      * @param $name
      * @return \Illuminate\Http\JsonResponse
      */
-    public function searchByName($name)
+    public function searchByName(SearchProducts $searchProducts, $name)
     {
-        //$product = Product::all();
-        $product = Product::all()->filter(function ($item) use ($name) {
-            return false !== stristr($item->name, $name);
-        });
-
-        return (new ProductResourceCollection($product))->response();
+      return $searchProducts->searchByName($name);
     }
 
     /**
      * @param $category
      * @return \Illuminate\Http\JsonResponse
      */
-    public function searchByCategoryName($category)
+    public function searchByCategoryName(SearchProducts $searchProducts, $category)
     {
-        $c = collect(new Product); // пустая коллекция
-
-        $items = Product::all();
-        foreach ($items as $item) {
-            $product = $item->categories->filter(function ($item) use ($category) {
-                return false !== stristr($item->name, $category);
-            });
-            if ($product->count() > 0) {    // Если найдена категория
-                $c->push($item);            // добавляем продукт в коллекцию
-            }
-        }
-
-        return (new ProductResourceCollection($c))->response();
+       return $searchProducts->searchByCategoryName($category);
     }
 
     /**
      * @param $categoryID
      * @return \Illuminate\Http\JsonResponse
      */
-    public function searchByCategoryID($categoryID)
+    public function searchByCategoryID(SearchProducts $searchProducts, $categoryID)
     {
-        $c = collect(new Product); // пустая коллекция
-
-        $items = Product::all();
-        foreach ($items as $item) {
-            $product = $item->categories->filter(function ($item) use ($categoryID) {
-                return ($item->id == $categoryID);
-            });
-            if ($product->count() > 0) {    // Если найдена категория
-                $c->push($item);            // добавляем продукт в коллекцию
-            }
-        }
-
-        return (new ProductResourceCollection($c))->response();
+        return $searchProducts->searchByCategoryID($categoryID);
     }
 
     /**
@@ -169,30 +141,28 @@ class ProductController extends Controller
      * @param $priceTo
      * @return \Illuminate\Http\JsonResponse
      */
-    public function searchByPrice($priceFrom, $priceTo)
+    public function searchByPrice(SearchProducts $searchProducts, $priceFrom, $priceTo)
     {
-        $product = Product::all()->filter(function ($item) use ($priceFrom, $priceTo) {
-            return ( ($item->price >= $priceFrom) && ($item->price <= $priceTo) );
-        });
-
-        return (new ProductResourceCollection($product))->response();
+        return $searchProducts->searchByPrice($priceFrom, $priceTo);
     }
 
-    public function indexPublished($published)
+    /**
+     * @param SearchProducts $searchProducts
+     * @param $published
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function indexPublished(SearchProducts $searchProducts, $published)
     {
-        $product = Product::all()->filter(function ($item) use ($published) {
-            return ( $item->published == $published );
-        });
-
-        return (new ProductResourceCollection($product))->response();
+        return $searchProducts->indexPublished($published);
     }
 
-    public function indexNotDeleted($deleted)
+    /**
+     * @param SearchProducts $searchProducts
+     * @param $deleted
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function indexNotDeleted(SearchProducts $searchProducts, $deleted)
     {
-        $product = Product::all()->filter(function ($item) use ($deleted) {
-            return ( $item->deleted == $deleted );
-        });
-
-        return (new ProductResourceCollection($product))->response();
+        return $searchProducts->indexNotDeleted($deleted);
     }
 }
