@@ -9,6 +9,27 @@ use App\Models\Product;
 class SearchProducts
 {
     /**
+     * invokes function by kind
+     *
+     * @param $kind
+     * @param $param1
+     * @param $param2
+     * @return \Illuminate\Http\JsonResponse|null
+     */
+    public function search($kind, $param1, $param2)
+    {
+        switch ($kind) {
+            case 'name': return($this->searchByName($param1));
+            case 'category-id': return($this->searchByCategoryID($param1));
+            case 'category-name': return($this->searchByCategoryName($param1));
+            case 'price': return($this->searchByPrice($param1, $param2));
+            case 'published': return($this->indexPublished($param1));
+            case 'deleted': return($this->indexNotDeleted($param1));
+            default: return  null;
+        }
+    }
+
+    /**
      * @param $name
      * @return \Illuminate\Http\JsonResponse
      */

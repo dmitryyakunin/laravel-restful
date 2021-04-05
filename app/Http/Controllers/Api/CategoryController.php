@@ -83,11 +83,12 @@ class CategoryController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param Product $product
+     * Soft delete
+     *
+     * @param Category $category
      * @return \Illuminate\Http\JsonResponse
      */
-    public function softDelete(Request $request, Category $category)
+    public function destroy(Category $category)
     {
         $category->published = 0;
         $category->deleted = 1;
@@ -95,28 +96,5 @@ class CategoryController extends Controller
         Log::info("Category ID {$category->id} deleted successfully.");
 
         return (new CategoryResource($category))->response();
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Category $category)
-    {
-        $category->delete();
-        Log::info("Category ID {$category->id} deleted successfully.");
-
-        return response(null, Response::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * @param Category $category
-     * @return mixed
-     */
-    public function searchProducts(Category $category)
-    {
-        return $category->products->count();
     }
 }

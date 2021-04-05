@@ -82,11 +82,12 @@ class ProductController extends Controller
     }
 
     /**
-     * @param Request $request
+     * Soft delete
+     *
      * @param Product $product
      * @return \Illuminate\Http\JsonResponse
      */
-    public function softDelete(Request $request, Product $product)
+    public function destroy(Product $product)
     {
         $product->published = 0;
         $product->deleted = 1;
@@ -97,72 +98,16 @@ class ProductController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Search product by params
      *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Product $product)
-    {
-        $product->delete();
-        Log::info("Product ID {$product->id} deleted successfully.");
-        return response(null, Response::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * @param $name
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function searchByName(SearchProducts $searchProducts, $name)
-    {
-      return $searchProducts->searchByName($name);
-    }
-
-    /**
-     * @param $category
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function searchByCategoryName(SearchProducts $searchProducts, $category)
-    {
-       return $searchProducts->searchByCategoryName($category);
-    }
-
-    /**
-     * @param $categoryID
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function searchByCategoryID(SearchProducts $searchProducts, $categoryID)
-    {
-        return $searchProducts->searchByCategoryID($categoryID);
-    }
-
-    /**
-     * @param $priceFrom
-     * @param $priceTo
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function searchByPrice(SearchProducts $searchProducts, $priceFrom, $priceTo)
-    {
-        return $searchProducts->searchByPrice($priceFrom, $priceTo);
-    }
-
-    /**
      * @param SearchProducts $searchProducts
-     * @param $published
-     * @return \Illuminate\Http\JsonResponse
+     * @param $kind
+     * @param $param1
+     * @param $param2
+     * @return \Illuminate\Http\JsonResponse|null
      */
-    public function indexPublished(SearchProducts $searchProducts, $published)
+    public function search(SearchProducts $searchProducts, $kind, $param1, $param2)
     {
-        return $searchProducts->indexPublished($published);
-    }
-
-    /**
-     * @param SearchProducts $searchProducts
-     * @param $deleted
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function indexNotDeleted(SearchProducts $searchProducts, $deleted)
-    {
-        return $searchProducts->indexNotDeleted($deleted);
+        return $searchProducts->search($kind, $param1, $param2);
     }
 }

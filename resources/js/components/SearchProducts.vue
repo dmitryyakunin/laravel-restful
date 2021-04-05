@@ -143,49 +143,49 @@ export default {
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option1') {    // имя товара
-                let url = 'http://laravel-restful/api/product-name/' + this.searchString
+                let url = 'http://laravel-restful/api/products/name/' + this.searchString+'/null'
                 axios
                     .get(url)
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option2') {    // id категории
-                let url = 'http://laravel-restful/api/product-category-id/' + this.searchString
+                let url = 'http://laravel-restful/api/products/category-id/' + this.searchString + '/null'
                 axios
                     .get(url)
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option3') {    // Название категории
-                let url = 'http://laravel-restful/api/product-category-name/' + this.searchString
+                let url = 'http://laravel-restful/api/products/category-name/' + this.searchString + '/null'
                 axios
                     .get(url)
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option4') {    // цена от - до
-                let url = 'http://laravel-restful/api/product-price/'+this.priceFrom+'/' + this.priceTo
+                let url = 'http://laravel-restful/api/products/price/'+this.priceFrom+'/' + this.priceTo
                 axios
                     .get(url)
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option5') {    // опубликованные
-                let url = 'http://laravel-restful/api/product-published/'+'1'
+                let url = 'http://laravel-restful/api/products/published/1' + '/null'
                 axios
                     .get(url)
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option6') {    // неопубликованные
-                let url = 'http://laravel-restful/api/product-published/'+'0'
+                let url = 'http://laravel-restful/api/products/published/0' + '/null'
                 axios
                     .get(url)
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option7') {    // неудаленные
-                let url = 'http://laravel-restful/api/product-deleted/'+'0'
+                let url = 'http://laravel-restful/api/products/deleted/0' + '/null'
                 axios
                     .get(url)
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option8') {    // удаленные
-                let url = 'http://laravel-restful/api/product-deleted/'+'1'
+                let url = 'http://laravel-restful/api/products/deleted/1' + '/null'
                 axios
                     .get(url)
                     .then(response => (this.products = response.data.data));
