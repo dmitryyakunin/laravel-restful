@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import config from "../helpers/config";
+
 export default {
     name: "AddCategory",
     data: () => ({
@@ -61,7 +63,7 @@ export default {
         },
         getCategories() {
             axios
-                .get('http://laravel-restful/api/categories/')
+                .get(config.endpoint + '/categories/')
                 .then(response => (this.categories = response.data.data));
         },
         closeModal() {
@@ -75,7 +77,7 @@ export default {
             if(this.$route.params.edit === '1') {   // редактирование
                 this.getPayload()
 
-                axios.put("http://laravel-restful/api/categories/"+this.id, this.payload)
+                axios.put(config.endpoint + '/categories/'+this.id, this.payload)
                     .then(response => {
                         this.id = response.data.data.id
                         this.$router.push({name: 'categories'}).catch(err => { })
@@ -83,7 +85,7 @@ export default {
             } else {                                // добавление
                 this.getPayload()
 
-                axios.post("http://laravel-restful/api/categories", this.payload)
+                axios.post(config.endpoint + '/categories', this.payload)
                     .then(response => {
                         this.id = response.data.data.id
                         this.$router.push({name: 'categories'}).catch(err => { })

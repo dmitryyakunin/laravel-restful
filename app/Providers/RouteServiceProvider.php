@@ -19,6 +19,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     public const HOME = '/home';
 
+    /** @var string $apiNamespace */
+    protected $apiNamespace = 'App\Http\Controllers\Api';
+
     /**
      * Define your route model bindings, pattern filters, etc.
      *
@@ -26,15 +29,30 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $latestAPIVersion = config('app.api_latest', 1);
+
         $this->configureRateLimiting();
 
         $this->routes(function () {
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
 
-            Route::prefix('api')
+            /*Route::prefix('api')
                 ->middleware('api')
-                ->group(base_path('routes/api.php'));
+                ->group(base_path('routes/api.php'));*/
+
+            Route::prefix('api/v1')
+                ->middleware(['api', 'api_version:v1'])
+                ->group(base_path('routes/api_v1.php'));
+
+/*            Route::group([
+                'middleware' => ['api', 'api_version:v1'],
+                'namespace' => "{$this->apiNamespace}\V1",
+                'prefix' => 'api/v1',
+            ], function ($router) {
+                require base_path('routes/api_v1.php');
+            });*/
+
         });
     }
 
@@ -49,4 +67,5 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60);
         });
     }
+
 }

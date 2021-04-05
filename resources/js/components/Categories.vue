@@ -2,9 +2,23 @@
     <div>
         <h3>Категории</h3>
 
-        <button class="btn btn-outline-primary position" v-on:click="addItem()">
-            Добавить категорию
-        </button>
+        <div class="row justify-content-between">
+            <div class="col-md-4">
+                <button class="btn btn-outline-primary position" v-on:click="addItem()">
+                    Добавить категорию
+                </button>
+            </div>
+            <div class="col-md-2" v-if="allItems === 0">
+                <button class="btn btn-outline-primary position" v-on:click="getCategories()">
+                    Все элементы
+                </button>
+            </div>
+            <div class="col-md-2" v-if="allItems === 1">
+                <button class="btn btn-outline-primary position" v-on:click="notDeleted()">
+                    Неудаленные
+                </button>
+            </div>
+        </div>
 
         <table class="table table-bordered">
             <tr>
@@ -12,6 +26,7 @@
                 <th> Наименование</th>
                 <th> Описание</th>
                 <th colspan="2"> Действие</th>
+                <th> Удал.</th>
             </tr>
             <tr v-for="item in categories" :key="item.id">
                 <td> {{ item.id }}</td>
@@ -28,23 +43,36 @@
                         Удалить
                     </button>
                 </td>
+                <td>
+                    {{ item.deleted }}
+                </td>
             </tr>
         </table>
     </div>
 </template>
 
 <script>
+import config from "../helpers/config";
+
 export default {
     name: "Categories",
     data: () => ({
         categories: null,
+        allItems: 1,
     }),
     methods: {
         getCategories() {
+            this.allItems = 1
             axios
-                .get('http://laravel-restful/api/categories/')
+                .get(config.endpoint + '/categories/')
                 .then(response => (this.categories = response.data.data))
                 .catch(error => console.log(error));
+        },
+        notDeleted() {
+            this.allItems = 0
+            axios
+                .get(config.endpoint + '/categories/deleted/0')
+                .then(response => (this.categories = response.data.data));
         },
         addItem() {
             this.$router.push({
@@ -69,12 +97,12 @@ export default {
         deleteItem(id) {
             if (confirm('Удалить категорию? ')) {
                 // проверим товары в категории
-                axios.get("http://laravel-restful/api/category-search-products/"+id)
+                axios.get(config.endpoint + '/categories/search-products/'+id)
                     .then(response => {
                         //console.log(response.data)
                         if(response.data === 0) {
                             // удалим программно
-                            axios.put('http://laravel-restful/api/category-delete/' + id)
+                            axios.delete(config.endpoint + '/categories/' + id)
                                 .then(response => {
                                     console.log('deleted ' + id);
                                     this.getCategories()

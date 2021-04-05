@@ -93,6 +93,8 @@
 </template>
 
 <script>
+import config from "../helpers/config";
+
 export default {
     name: "AddProduct",
     data: () => ({
@@ -114,7 +116,7 @@ export default {
         },
         getCategories() {
             axios
-                .get('http://laravel-restful/api/categories/')
+                .get(config.endpoint + '/categories/')
                 .then(response => (this.categories = response.data.data));
         },
         closeModal() {
@@ -138,12 +140,12 @@ export default {
                 this.getPayload()
                 this.payload.categories = []
 
-                axios.post("http://laravel-restful/api/products", this.payload) // сохраним
+                axios.post(config.endpoint + '/products', this.payload) // сохраним
                     .then(response => {
                         this.id = response.data.data.id
 
                         this.payload.categories = this.selectedCat  // восстановим категории
-                        axios.put("http://laravel-restful/api/products/" + this.id, this.payload) // запишем категории
+                        axios.put(config.endpoint + '/products/' + this.id, this.payload) // запишем категории
                             .then(response => {
                                 this.id = response.data.data.id
                                 this.$router.push({name: 'products'}).catch(err => {
@@ -174,7 +176,7 @@ export default {
         },
         getProducts() {
             axios
-                .get('http://laravel-restful/api/products/')
+                .get(config.endpoint + '/products/')
                 .then(response => (this.products = response.data.data));
         },
         returnToList() {
