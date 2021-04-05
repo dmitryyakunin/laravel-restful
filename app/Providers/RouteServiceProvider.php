@@ -29,11 +29,11 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $latestAPIVersion = config('app.api_latest', 1);
-
         $this->configureRateLimiting();
 
         $this->routes(function () {
+            $latestAPIVersion = config('app.api_latest', 1);
+
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
 
@@ -41,18 +41,9 @@ class RouteServiceProvider extends ServiceProvider
                 ->middleware('api')
                 ->group(base_path('routes/api.php'));*/
 
-            Route::prefix('api/v1')
-                ->middleware(['api', 'api_version:v1'])
-                ->group(base_path('routes/api_v1.php'));
-
-/*            Route::group([
-                'middleware' => ['api', 'api_version:v1'],
-                'namespace' => "{$this->apiNamespace}\V1",
-                'prefix' => 'api/v1',
-            ], function ($router) {
-                require base_path('routes/api_v1.php');
-            });*/
-
+            Route::prefix("api/v$latestAPIVersion")
+                ->middleware(["api", "api_version:v$latestAPIVersion"])
+                ->group(base_path("routes/api_v$latestAPIVersion.php"));
         });
     }
 
