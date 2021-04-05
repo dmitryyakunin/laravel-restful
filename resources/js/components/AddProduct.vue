@@ -2,15 +2,17 @@
     <div>
         <div class="card" style="width: 600px;">
             <div class="card-body">
-                <form>
+                <form id="add-product">
                     <div class="form-group">
                         <label for="inputName">Наименование</label>
                         <input type="text" class="form-control" id="inputName" v-model="name"
-                               placeholder="Наименование">
+                               placeholder="Наименование" required>
                     </div>
                     <div class="form-group">
                         <label for="inputDescription">Описание</label>
-                        <textarea class="form-control" rows="5" v-model="description" id="inputDescription"></textarea>
+                        <textarea class="form-control" rows="5" v-model="description" id="inputDescription"
+                                  required>
+                        </textarea>
                     </div>
                     <div class="form-group">
                         <label for="inputPrice">Цена</label>
@@ -35,12 +37,14 @@
                     </button>
 
                     <p></p>
-                    <div class="row">
-                        <div class="col-sm-9">
-                            <button class="btn btn-outline-primary" v-if="edit==='0'" v-on:click="addEditItem()">
+                    <div class="row justify-content-between" style="padding-right: 20px">
+                        <div class="col-sm-5">
+                            <button class="btn btn-outline-primary" v-if="edit==='0'"
+                                    v-on:click="addEditItem()">
                                 Добавить товар
                             </button>
-                            <button class="btn btn-outline-primary" v-if="edit==='1'" v-on:click="addEditItem()">
+                            <button class="btn btn-outline-primary" v-if="edit==='1'"
+                                    v-on:click="addEditItem()">
                                 Сохранить изменения
                             </button>
                         </div>
@@ -105,6 +109,9 @@ export default {
         payload: null,
     }),
     methods: {
+        checkForm: function () {
+            return (this.name && this.description)
+        },
         getCategories() {
             axios
                 .get('http://laravel-restful/api/categories/')
@@ -114,6 +121,10 @@ export default {
             document.getElementById('close-btn').click();
         },
         addEditItem() {
+            if (!this.checkForm()) {
+                return
+            }
+
             if (this.$route.params.edit === '1') {   // редактирование
                 this.getPayload()
 
