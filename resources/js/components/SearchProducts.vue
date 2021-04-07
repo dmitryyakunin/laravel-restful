@@ -139,57 +139,48 @@ export default {
         },
         search() {
             if (this.searchType === 'option0') {    // все товары
-                let url = config.endpoint + '/products/'
                 axios
-                    .get(url)
+                    .get(config.endpoint + '/products/')
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option1') {    // имя товара
-                let url = config.endpoint + '/products/name/' + this.searchString+'/null'
                 axios
-                    .get(url)
+                    .get(config.getSearchRoute('name', this.searchString,'null'))
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option2') {    // id категории
-                let url = config.endpoint + '/products/category-id/' + this.searchString + '/null'
                 axios
-                    .get(url)
+                    .get(config.getSearchRoute('category-id', this.searchString,'null'))
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option3') {    // Название категории
-                let url = config.endpoint + '/products/category-name/' + this.searchString + '/null'
                 axios
-                    .get(url)
+                    .get(config.getSearchRoute('category-name', this.searchString,'null'))
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option4') {    // цена от - до
-                let url = config.endpoint + '/products/price/'+this.priceFrom+'/' + this.priceTo
                 axios
-                    .get(url)
+                    .get(config.getSearchRoute('price', this.priceFrom, this.priceTo))
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option5') {    // опубликованные
-                let url = config.endpoint + '/products/published/1' + '/null'
                 axios
-                    .get(url)
+                    .get(config.getSearchRoute('published', 1,'null'))
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option6') {    // неопубликованные
-                let url = config.endpoint + '/products/published/0' + '/null'
                 axios
-                    .get(url)
+                    .get(config.getSearchRoute('published', 0,'null'))
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option7') {    // неудаленные
-                let url = config.endpoint + '/products/deleted/0' + '/null'
                 axios
-                    .get(url)
+                    .get(config.getSearchRoute('deleted', 0,'null'))
                     .then(response => (this.products = response.data.data));
             }
             if (this.searchType === 'option8') {    // удаленные
-                let url = config.endpoint + '/products/deleted/1' + '/null'
                 axios
-                    .get(url)
+                    .get(config.getSearchRoute('deleted', 1,'null'))
                     .then(response => (this.products = response.data.data));
             }
         }

@@ -18,13 +18,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('categories/{kind}/{param1}', 'App\Http\Controllers\Api\V1\CategoryController@search')
-    ->name('products.search');
-Route::get('categories/search-products/{category}', 'App\Http\Controllers\Api\V1\CategoryController@searchProducts')
-    ->name('categories.searchProducts');
+Route::get('categories/search/{kind}/{param1}', 'App\Http\Controllers\Api\V1\CategoryController@search');
+Route::get('categories/search/products/{category}', 'App\Http\Controllers\Api\V1\CategoryController@searchProducts');
 Route::apiResource('categories', 'App\Http\Controllers\Api\V1\CategoryController');
 
-Route::get('products/{kind}/{param1}/{param2}', 'App\Http\Controllers\Api\V1\ProductController@search')
-    ->name('products.search');
+Route::get('products/search/{kind}/{param1}/{param2}', 'App\Http\Controllers\Api\V1\ProductController@search');
 Route::apiResource('products', 'App\Http\Controllers\Api\V1\ProductController');
 

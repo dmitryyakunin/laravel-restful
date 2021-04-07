@@ -78,7 +78,7 @@ export default {
         notDeleted() {
             this.allItems = 0
             axios
-                .get(config.endpoint + '/products/deleted/0' + '/null')
+                .get(config.getSearchRoute('deleted', 0,'null'))
                 .then(response => (this.products = response.data.data));
         },
         deleteItem(id) {

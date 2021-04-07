@@ -29,11 +29,11 @@ class SearchCategories
      */
     public function indexPublished($published)
     {
-        $product = Category::all()->filter(function ($item) use ($published) {
+        $category = Category::all()->filter(function ($item) use ($published) {
             return ( $item->published == $published );
         });
 
-        return (new CategoryResourceCollection($product))->response();
+        return (new CategoryResourceCollection($category))->response();
     }
 
     /**
@@ -42,10 +42,10 @@ class SearchCategories
      */
     public function indexNotDeleted($deleted)
     {
-        $product = Category::all()->filter(function ($item) use ($deleted) {
+        $category = Category::all()->filter(function ($item) use ($deleted) {
             return ( $item->deleted == $deleted );
         });
 
-        return (new CategoryResourceCollection($product))->response();
+        return (new CategoryResourceCollection($category))->response();
     }
 }

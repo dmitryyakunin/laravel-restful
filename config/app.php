@@ -237,6 +237,6 @@ return [
     | The idea is that if there is no version when calling the API, it  | will be used this one.
     */
 
-    'api_latest' => '1',
+    'api_latest' => '2',
 
 ];

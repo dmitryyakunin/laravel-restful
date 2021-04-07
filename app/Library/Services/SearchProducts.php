@@ -115,7 +115,7 @@ class SearchProducts
      * @param $deleted
      * @return \Illuminate\Http\JsonResponse
      */
-    public function indexNotDeleted($deleted)
+    public function indexNotDeleted($deleted): \Illuminate\Http\JsonResponse
     {
         $product = Product::all()->filter(function ($item) use ($deleted) {
             return ( $item->deleted == $deleted );

@@ -71,7 +71,7 @@ export default {
         notDeleted() {
             this.allItems = 0
             axios
-                .get(config.endpoint + '/categories/deleted/0')
+                .get(config.endpoint + '/categories/search/deleted/0')
                 .then(response => (this.categories = response.data.data));
         },
         addItem() {
@@ -97,7 +97,7 @@ export default {
         deleteItem(id) {
             if (confirm('Удалить категорию? ')) {
                 // проверим товары в категории
-                axios.get(config.endpoint + '/categories/search-products/'+id)
+                axios.get(config.endpoint + '/categories/search/products/'+id)
                     .then(response => {
                         //console.log(response.data)
                         if(response.data === 0) {

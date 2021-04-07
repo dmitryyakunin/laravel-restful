@@ -14,7 +14,7 @@ class ProductResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+			  return [
             'id'          => $this->id,
             'name'        => $this->name,
             'description' => $this->description,
@@ -25,6 +25,6 @@ class ProductResource extends JsonResource
             'created_at'  => $this->created_at,
             'updated_at'  => $this->updated_at,
         ];
-//        return parent::toArray($request);
+        //return parent::toArray($request);
     }
 }
